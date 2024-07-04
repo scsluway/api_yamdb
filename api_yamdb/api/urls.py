@@ -1,17 +1,34 @@
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import DefaultRouter
 
+from api import views
 
-# v1_router = SimpleRouter()
-# v1_router.register('categories', views.CategoryViewSet, basename='category')
-# v1_router.register('genres', views.GenreViewSet, basename='genre')
-# v1_router.register('titles', views.TitleViewSet, basename='title')
+app_name = 'api'
 
+router_v1 = DefaultRouter()
+router_v1.register('users', views.UserViewSet, basename='users')
+# router_v1.register('categories', views.CategoryViewSet, basename='category')
+# router_v1.register('genres', views.GenreViewSet, basename='genre')
+# router_v1.register('titles', views.TitleViewSet, basename='title')
 
-# v1_urls = [
-#     path('', include(v1_router.urls)),
-# ]
+auth_urls = [
+    path(
+        'signup/',
+        views.create_user,
+        name='create_user'
+    ),
+    path(
+        'token/',
+        views.get_token,
+        name='get_token'
+    ),
+]
 
-# urlpatterns = [
-#     path('v1/', include(v1_urls)),
-# ]
+v1_urls = [
+    path('auth/', include(auth_urls)),
+    path('', include(router_v1.urls)),
+]
+
+urlpatterns = [
+    path('v1/', include(v1_urls))
+]
