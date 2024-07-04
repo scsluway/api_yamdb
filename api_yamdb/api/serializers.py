@@ -1,13 +1,14 @@
-from users.models import User
-from users.validators import UsernameValidationMixin
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from users.models import User
+from users.validators import UsernameValidationMixin
+
 
 class UserSerializer(UsernameValidationMixin, serializers.ModelSerializer):
     username = serializers.CharField(
         required=True,
         max_length=150,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        validators=[UniqueValidator(queryset=User.objects.all())],
     )
     email = serializers.EmailField(
         required=True,
@@ -22,7 +23,7 @@ class UserSerializer(UsernameValidationMixin, serializers.ModelSerializer):
             'first_name',
             'last_name',
             'bio',
-            'role'
+            'role',
         )
 
 
@@ -49,9 +50,9 @@ class UserCreateSerializer(
         if not user:
             errors = {}
             if User.objects.filter(username=username).exists():
-                errors['username'] = 'Пользователь с таким именем уже существует.'
+                errors['username'] = 'User with the same name already exists.'
             if User.objects.filter(email=email).exists():
-                errors['email'] = 'Пользователь с такой почтой уже существует.'
+                errors['email'] = 'User with the same email already exists.'
 
             if errors:
                 raise serializers.ValidationError(errors)
@@ -65,7 +66,7 @@ class UserCreateSerializer(
         user, created = User.objects.update_or_create(
             username=username,
             email=email,
-            defaults={'confirmation_code': confirmation_code}
+            defaults={'confirmation_code': confirmation_code},
         )
 
         if created:

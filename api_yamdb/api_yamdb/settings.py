@@ -124,3 +124,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
+USE_FIXED_CONFIRMATION_CODE = True  # Измените на False для продакшена
+FIXED_CONFIRMATION_CODE = '12345'
