@@ -7,10 +7,11 @@ def regex_validator(value):
     if value.lower() == 'me':
         raise ValidationError('Username "me" is not allowed.')
 
-    invalid_chars = ''.join(set(re.sub(r'^[\w.@+-]+\Z', '', value)))
+    invalid_chars = ''.join(set(re.sub(r'^[\w.@+-]+$', '', value)))
     if invalid_chars:
-        error_message = (f'Username contains invalid characters:'
-                         f' {invalid_chars}')
+        error_message = (
+            f'Username contains invalid characters:' f' {invalid_chars}'
+        )
         raise ValidationError(error_message)
     return value
 

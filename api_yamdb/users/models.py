@@ -1,10 +1,14 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
 from users.validators import regex_validator
 
 
 class User(AbstractUser):
+    class Roles(models.TextChoices):
+        USER = 'user', 'Пользователь'
+        MODERATOR = 'moderator', 'Модератор'
+        ADMIN = 'admin', 'Администратор'
+
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -12,6 +16,7 @@ class User(AbstractUser):
 
     email = models.EmailField(
         verbose_name='Email',
+        max_length=254,
         unique=True,
         blank=False,
     )
@@ -22,27 +27,20 @@ class User(AbstractUser):
         blank=False,
         validators=[regex_validator],
     )
-    ROLES = (
-        ('user', 'Пользователь'),
-        ('moderator', 'Модератор'),
-        ('admin', 'Администратор'),
-    )
     role = models.CharField(
-        max_length=max(len(label) for _, label in ROLES),
-        choices=ROLES,
+        max_length=20,
+        choices=Roles.choices,
         blank=True,
         null=True,
-        default='user',
-        verbose_name='Роль'
+        default=Roles.USER,
+        verbose_name='Роль',
     )
-    bio = models.TextField(
-        verbose_name='Биография',
-        blank=True
-    )
+    bio = models.TextField(verbose_name='Биография', blank=True)
     confirmation_code = models.CharField(
         max_length=5,
         verbose_name='Код подтверждения',
-        blank=True
+        blank=True,
+        editable=False,
     )
 
     def __str__(self):
