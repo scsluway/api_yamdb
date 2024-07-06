@@ -1,15 +1,16 @@
-from api import views
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
+from api import views
 
 app_name = 'api'
 
 # Создаем роутер для автоматического создания URL-ов для ViewSet-ов
 router_v1 = DefaultRouter()
 router_v1.register('users', views.UserViewSet, basename='users')
-# router_v1.register('categories', views.CategoryViewSet, basename='category')
-# router_v1.register('genres', views.GenreViewSet, basename='genre')
-# router_v1.register('titles', views.TitleViewSet, basename='title')
+router_v1.register('categories', views.CategoryViewSet, basename='category')
+router_v1.register('genres', views.GenreViewSet, basename='genre')
+router_v1.register('titles', views.TitleViewSet, basename='title')
 
 # URL-ы для аутентификации
 auth_urls = [

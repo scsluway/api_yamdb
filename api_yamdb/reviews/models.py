@@ -28,7 +28,8 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField(max_length=256)
-    year = models.DateTimeField()
+    year = models.IntegerField()
+    rating = models.IntegerField(default=0)
     description = models.TextField()
     category = models.ForeignKey(
         Category,
@@ -36,7 +37,10 @@ class Title(models.Model):
         related_name='titles',
         null=True,
     )
-    genre = models.ManyToManyField(Genre, related_name='titles')
+    genre = models.ManyToManyField(
+        Genre,
+        related_name='titles',
+    )
 
     class Meta:
         ordering = ('name',)
