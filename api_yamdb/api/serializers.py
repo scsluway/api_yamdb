@@ -1,7 +1,10 @@
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from users.models import User
 from users.validators import UsernameValidationMixin
+
+from reviews.models import Category, Genre, Title
 
 
 class UserSerializer(UsernameValidationMixin, serializers.ModelSerializer):
@@ -77,3 +80,47 @@ class UserCreateSerializer(
 class GetTokenSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        exclude = ('id',)
+        model = Category
+
+
+class GenreSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        exclude = ('id',)
+        model = Genre
+
+
+class TitleCreateSerializer(serializers.ModelSerializer):
+    genre = serializers.SlugRelatedField(
+        queryset=Genre.objects.all(), many=True, slug_field='slug'
+    )
+    category = serializers.SlugRelatedField(
+        queryset=Category.objects.all(), slug_field='slug'
+    )
+
+    class Meta:
+        model = Title
+        fields = ('name', 'year', 'description', 'genre', 'category')
+
+    def validate_year(self, value):
+        if value > timezone.now().year:
+            raise serializers.ValidationError(
+                'Год выпуска не может быть больше текущего года.'
+            )
+        return value
+
+
+class TitleListSerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
+
+    class Meta:
+        fields = '__all__'
+        read_only_fields = ('rating',)
+        model = Title
