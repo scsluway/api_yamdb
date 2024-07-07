@@ -15,6 +15,7 @@ class UserSerializer(UsernameValidationMixin, serializers.ModelSerializer):
     )
     email = serializers.EmailField(
         required=True,
+        max_length=254,
         validators=[UniqueValidator(queryset=User.objects.all())],
     )
 
@@ -39,6 +40,7 @@ class UserCreateSerializer(
     )
     email = serializers.EmailField(
         required=True,
+        max_length=254,
     )
 
     class Meta:
