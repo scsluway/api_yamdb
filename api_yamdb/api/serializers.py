@@ -111,7 +111,8 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     def validate_year(self, value):
         if value > timezone.now().year:
             raise serializers.ValidationError(
-                'Год выпуска не может быть больше текущего года.'
+                'The year of publication of the work '
+                'cannot be greater than the current year.'
             )
         return value
 
