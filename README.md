@@ -175,6 +175,7 @@ python3 manage.py runserver
 }
 ```
 Эндпоинт: `/api/v1/titles/{titles_id}/`
+
 Метод: `GET`
 
 Пример ответа:
@@ -233,12 +234,15 @@ python3 manage.py runserver
 }
 ```
 
+
 Эндпоинт: `/api/v1/titles/{titles_id}/`
+
 Метод: `DELETE`
 
 ### Категории
 
 Эндпоинт: `/api/v1/categories/`  
+
 Метод: `GET`
 
 Пример ответа:
@@ -273,12 +277,15 @@ python3 manage.py runserver
 }
 ```
 
+
 Эндпоинт: `/api/v1/categories/{slug}`  
+
 Метод: `DELETE`
 
 ### Жанры 
 
 Эндпоинт: `/api/v1/genres/`  
+
 Метод: `GET`
 
 Пример ответа:
@@ -313,8 +320,11 @@ python3 manage.py runserver
 }
 ```
 
-Эндпоинт: `/api/v1/genres/{slug}`  
+
+Эндпоинт: `/api/v1/genres/{slug}`
+
 Метод: `DELETE`
+
 
 ## Тестирование проекта через Postman
 
