@@ -124,5 +124,5 @@ class TitleListSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
 
     class Meta:
-        fields = '__all__'
+        exlude = 'review'
         model = Title
