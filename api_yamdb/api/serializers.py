@@ -125,5 +125,4 @@ class TitleListSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        read_only_fields = ('rating',)
         model = Title

@@ -31,6 +31,11 @@ class Title(models.Model):
     year = models.IntegerField()
     rating = models.IntegerField(default=0)
     description = models.TextField()
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='title',
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
