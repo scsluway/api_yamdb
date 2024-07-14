@@ -44,7 +44,7 @@ class Title(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
+        ordering = ['id']
 
     def __str__(self):
         return self.name[:20]
@@ -92,8 +92,19 @@ class Comment(models.Model):
 
 
 class GenreTitle(models.Model):
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
-    title = models.ForeignKey(Title, on_delete=models.CASCADE)
+    genre = models.ForeignKey(
+        Genre, on_delete=models.CASCADE, related_name='genre_titles', null=True
+    )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='genre_titles',
+        null=True,  # Добавьте это
+    )
 
     class Meta:
-        unique_together = ('genre', 'title')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['genre', 'title'], name='unique_genre_title'
+            )
+        ]
