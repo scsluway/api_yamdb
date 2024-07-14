@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.db.models import Avg
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -117,8 +117,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
         genres = validated_data.pop('genre')
         title = Title.objects.create(**validated_data)
         for genre in genres:
-            GenreTitle.objects.create(
-                genre=genre, title=title)
+            GenreTitle.objects.create(genre=genre, title=title)
         return title
 
     def validate_year(self, value):
@@ -140,5 +139,5 @@ class TitleListSerializer(serializers.ModelSerializer):
         model = Title
 
     def get_rating(self, obj):
-        rating_data = obj.reviews.values('score')
-        return sum(rating_data) // len(rating_data) if rating_data else None
+        rating = obj.reviews.aggregate(Avg('score'))['score__avg']
+        return round(rating, 1) if rating is not None else None

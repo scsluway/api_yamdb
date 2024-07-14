@@ -97,7 +97,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
 }
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
@@ -125,5 +125,5 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
-USE_FIXED_CONFIRMATION_CODE = True  # Измените на False для продакшена
+USE_FIXED_CONFIRMATION_CODE = False  # Измените на False для продакшена
 FIXED_CONFIRMATION_CODE = '12345'
