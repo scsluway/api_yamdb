@@ -1,10 +1,11 @@
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from users.models import User
 from users.validators import UsernameValidationMixin
 
-from reviews.models import Category, Genre, Title
+from reviews.models import Category, Genre, GenreTitle, Title
 
 
 class UserSerializer(UsernameValidationMixin, serializers.ModelSerializer):
@@ -110,6 +111,16 @@ class TitleCreateSerializer(serializers.ModelSerializer):
         model = Title
         fields = ('name', 'year', 'description', 'genre', 'category')
 
+    def create(self, validated_data):
+        if 'genre' not in self.initial_data:
+            return Title.objects.create(**validated_data)
+        genres = validated_data.pop('genre')
+        title = Title.objects.create(**validated_data)
+        for genre in genres:
+            GenreTitle.objects.create(
+                genre=genre, title=title)
+        return title
+
     def validate_year(self, value):
         if value > timezone.now().year:
             raise serializers.ValidationError(
@@ -122,7 +133,12 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 class TitleListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     category = CategorySerializer()
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         fields = '__all__'
         model = Title
+
+    def get_rating(self, obj):
+        rating_data = obj.reviews.values('score')
+        return sum(rating_data) // len(rating_data) if rating_data else None

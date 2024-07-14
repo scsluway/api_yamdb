@@ -16,15 +16,14 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_title(self):
         return get_object_or_404(
-            Title, id=self.kwargs.get('title_id')
+            Title, pk=self.kwargs.get('title_id')
         )
 
     def get_queryset(self):
         return self.get_title().reviews.all()
 
     def perform_create(self, serializer):
-
-        if self.get_title().review.filter(author=self.request.user):
+        if self.get_title().reviews.filter(author=self.request.user):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer.save(
             author=self.request.user,
@@ -42,7 +41,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_review(self):
         return get_object_or_404(
-            Review, id=self.kwargs.get('review_id')
+            Review, pk=self.kwargs.get('review_id')
         )
 
     def get_queryset(self):
