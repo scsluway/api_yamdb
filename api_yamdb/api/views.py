@@ -3,22 +3,39 @@ from string import digits
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import MethodNotAllowed
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import (
+    LimitOffsetPagination,
+    PageNumberPagination,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from users.models import User
 
+from .filters import TitleFilter
 from api.permissions import AdminOrReadOnly, IsAdminUser
-from api.serializers import (CategorySerializer, GenreSerializer,
-                             GetTokenSerializer, TitleCreateSerializer,
-                             TitleListSerializer, UserCreateSerializer,
-                             UserSerializer)
+from api.serializers import (
+    CategorySerializer,
+    GenreSerializer,
+    GetTokenSerializer,
+    TitleCreateSerializer,
+    TitleListSerializer,
+    UserCreateSerializer,
+    UserSerializer,
+)
 from reviews.models import Category, Genre, Title
+
+
+class CustomPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -109,10 +126,10 @@ def get_token(request):
 
 
 class BaseViewSet(
-        mixins.ListModelMixin,
-        mixins.DestroyModelMixin,
-        mixins.CreateModelMixin,
-        viewsets.GenericViewSet
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
 ):
     filter_backends = (filters.SearchFilter,)
     permission_classes = (AdminOrReadOnly,)
@@ -123,51 +140,31 @@ class BaseViewSet(
 class CategoryViewSet(BaseViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    pagination_class = CustomPagination
 
 
 class GenreViewSet(BaseViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    pagination_class = CustomPagination
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
-    serializer_class = TitleListSerializer
     permission_classes = (AdminOrReadOnly,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = (
-        'category__slug',
-        'genre__slug',
-        'name',
-        'year',
-    )
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
+    pagination_class = CustomPagination
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        serializer = TitleCreateSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        title = get_object_or_404(Title, name=data.get('name'))
-        serializer = TitleListSerializer(title)
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED
-        )
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return TitleListSerializer
+        return TitleCreateSerializer
 
-    def partial_update(self, request, pk):
-        title = get_object_or_404(Title, pk=pk)
-        serializer = TitleCreateSerializer(
-            title,
-            data=request.data,
-            partial=True
+    def get_queryset(self):
+        return (
+            Title.objects.all()
+            .annotate(rating=Avg('reviews__score'))
+            .order_by('id')
         )
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        serializer = TitleListSerializer(title)
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK
-        )
-
-    def update(self, request, pk):
-        raise MethodNotAllowed(request.method)

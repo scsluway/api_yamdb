@@ -1,10 +1,11 @@
+from django.db.models import Avg
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from users.models import User
 from users.validators import UsernameValidationMixin
 
-from reviews.models import Category, Genre, Title
+from reviews.models import Category, Genre, GenreTitle, Title
 
 
 class UserSerializer(UsernameValidationMixin, serializers.ModelSerializer):
@@ -85,17 +86,15 @@ class GetTokenSerializer(serializers.Serializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
     class Meta:
-        exclude = ('id',)
         model = Category
+        fields = ('name', 'slug')
 
 
 class GenreSerializer(serializers.ModelSerializer):
-
     class Meta:
-        exclude = ('id',)
         model = Genre
+        fields = ('name', 'slug')
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):
@@ -108,7 +107,16 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('name', 'year', 'description', 'genre', 'category')
+        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
+
+    def create(self, validated_data):
+        if 'genre' not in self.initial_data:
+            return Title.objects.create(**validated_data)
+        genres = validated_data.pop('genre')
+        title = Title.objects.create(**validated_data)
+        for genre in genres:
+            GenreTitle.objects.create(genre=genre, title=title)
+        return title
 
     def validate_year(self, value):
         if value > timezone.now().year:
@@ -120,9 +128,18 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
 
 class TitleListSerializer(serializers.ModelSerializer):
-    genre = GenreSerializer(many=True)
-    category = CategorySerializer()
+    genre = GenreSerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
+    rating = serializers.IntegerField(read_only=True)
 
     class Meta:
-        fields = '__all__'
         model = Title
+        fields = (
+            'id',
+            'name',
+            'year',
+            'rating',
+            'description',
+            'genre',
+            'category',
+        )

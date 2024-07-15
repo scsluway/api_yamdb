@@ -5,18 +5,18 @@ from rest_framework.response import Response
 from .models import Comment, Review, Title
 from users.models import User
 
+
 class ReviewSerializer(serializers.ModelSerializer):
     text = serializers.CharField(required=True)
     score = serializers.IntegerField(required=True)
-    title = serializers.SlugRelatedField(slug_field='id', read_only=True)
     author = serializers.SlugRelatedField(
         read_only=True, slug_field='username'
     )
 
     class Meta:
         model = Review
-        fields = ('id', 'text', 'author', 'score', 'pub_date', 'title')
-        read_only_fields = ('author', 'title')
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
+        read_only_fields = ('author',)
 
     def validate(self, attrs):
         if 0 > attrs['score'] or attrs['score'] > 10:
