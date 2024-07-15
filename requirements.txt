@@ -5,9 +5,7 @@ certifi==2024.6.2
 charset-normalizer==2.0.12
 colorama==0.4.6
 Django==3.2
-django-filter==23.1
 djangorestframework==3.12.4
-djangorestframework-simplejwt==5.2.0
 idna==3.7
 iniconfig==2.0.0
 packaging==24.1

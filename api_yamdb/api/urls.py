@@ -4,7 +4,6 @@ from rest_framework.routers import DefaultRouter
 from api import views
 from reviews.views import CommentViewSet, ReviewViewSet
 
-
 app_name = 'api'
 
 # Создаем роутер для автоматического создания URL-ов для ViewSet-ов

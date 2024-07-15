@@ -4,9 +4,9 @@ from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import LimitOffsetPagination
 
-from .models import Review, Title
-from .serializers import CommentSerializer, ReviewSerializer
 from api.permissions import AuthorOrModerOrReadOnly, IsAuthenticatedOrReadOnly
+from reviews.models import Review, Title
+from reviews.serializers import CommentSerializer, ReviewSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):

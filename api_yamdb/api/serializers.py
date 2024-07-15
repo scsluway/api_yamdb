@@ -1,11 +1,10 @@
-from django.db.models import Avg
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from users.models import User
-from users.validators import UsernameValidationMixin
 
 from reviews.models import Category, Genre, GenreTitle, Title
+from users.models import User
+from users.validators import UsernameValidationMixin
 
 
 class UserSerializer(UsernameValidationMixin, serializers.ModelSerializer):
