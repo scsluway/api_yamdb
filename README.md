@@ -325,6 +325,88 @@ python3 manage.py runserver
 
 Метод: `DELETE`
 
+### Отзывы
+
+Эндпоинт: `/api/v1/titles/{title_id}/reviews`  
+Метод: `GET`
+
+Пример ответа:
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "text": "string",
+      "author": "string",
+      "score": 1,
+      "pub_date": "2019-08-24T14:15:22Z"
+    }
+  ]
+}
+```
+
+Метод: `POST`
+
+Пример запроса:
+```json
+{
+  "text": "string",
+  "score": 1
+}
+```
+Пример ответа:
+```json
+{
+  "id": 0,
+  "text": "string",
+  "author": "string",
+  "score": 1,
+  "pub_date": "2019-08-24T14:15:22Z"
+}
+```
+Эндпоинт: `/api/v1/titles/{title_id}/reviews/{review_id}/`
+
+Метод: `GET`
+
+Пример ответа:
+```json
+{
+  "id": 0,
+  "text": "string",
+  "author": "string",
+  "score": 1,
+  "pub_date": "2019-08-24T14:15:22Z"
+}
+```
+
+Метод: `PATCH`
+
+Пример запроса:
+```json
+{
+  "text": "string",
+  "score": 1
+}
+```
+Пример ответа:
+```json
+{
+  "id": 0,
+  "text": "string",
+  "author": "string",
+  "score": 1,
+  "pub_date": "2019-08-24T14:15:22Z"
+}
+```
+
+
+Эндпоинт: `/api/v1/titles/{title_id}/reviews/{review_id}/`
+
+Метод: `DELETE`
+
 
 ## Тестирование проекта через Postman
 
