@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     # Downloaded Apps
     'rest_framework',
     'django_filters',
+    'rest_framework_simplejwt',
     # Project Apps
     'users.apps.UsersConfig',
     'api.apps.ApiConfig',
