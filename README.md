@@ -407,6 +407,82 @@ python3 manage.py runserver
 
 Метод: `DELETE`
 
+### Комментарии
+
+Эндпоинт: `/api/v1/titles/{title_id}/reviews/comments/`  
+Метод: `GET`
+
+Пример ответа:
+```json
+{
+  "count": 0,
+  "next": "string",
+  "previous": "string",
+  "results": [
+    {
+      "id": 0,
+      "text": "string",
+      "author": "string",
+      "pub_date": "2019-08-24T14:15:22Z"
+    }
+  ]
+}
+```
+
+Метод: `POST`
+
+Пример запроса:
+```json
+{
+  "text": "string"
+}
+```
+Пример ответа:
+```json
+{
+  "id": 0,
+  "text": "string",
+  "author": "string",
+  "pub_date": "2019-08-24T14:15:22Z"
+}
+```
+Эндпоинт: `/api/v1/titles/{title_id}/reviews/{review_id}/comments/{comment_id}/`
+
+Метод: `GET`
+
+Пример ответа:
+```json
+{
+  "id": 0,
+  "text": "string",
+  "author": "string",
+  "pub_date": "2019-08-24T14:15:22Z"
+}
+```
+
+Метод: `PATCH`
+
+Пример запроса:
+```json
+{
+  "text": "string"
+}
+```
+Пример ответа:
+```json
+{
+  "id": 0,
+  "text": "string",
+  "author": "string",
+  "pub_date": "2019-08-24T14:15:22Z"
+}
+```
+
+
+Эндпоинт: `/api/v1/titles/{title_id}/reviews/{review_id}/comments/{comment_id}/`
+
+Метод: `DELETE`
+
 
 ## Тестирование проекта через Postman
 
