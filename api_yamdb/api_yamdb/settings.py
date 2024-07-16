@@ -21,8 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Downloaded Apps
-    'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework',
     'django_filters',
     # Project Apps
     'users.apps.UsersConfig',
