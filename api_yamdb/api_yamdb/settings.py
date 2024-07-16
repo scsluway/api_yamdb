@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Downloaded Apps
     'rest_framework',
+    'rest_framework_simplejwt',
     'django_filters',
     # Project Apps
     'users.apps.UsersConfig',
