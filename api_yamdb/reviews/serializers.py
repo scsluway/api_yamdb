@@ -18,7 +18,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if 0 > attrs['score'] or attrs['score'] > 10:
             raise serializers.ValidationError(
-                'Оценка от 0 до 10'
+                'You can only rate from 0 to 10.'
             )
 
         return attrs
