@@ -6,7 +6,6 @@ from reviews.views import CommentViewSet, ReviewViewSet
 
 app_name = 'api'
 
-# Создаем роутер для автоматического создания URL-ов для ViewSet-ов
 router_v1 = DefaultRouter()
 router_v1.register('users', views.UserViewSet, basename='users')
 router_v1.register('categories', views.CategoryViewSet, basename='category')
@@ -23,17 +22,14 @@ router_v1.register(
     basename='comments'
 )
 
-# URL-ы для аутентификации
 auth_urls = [
     path('signup/', views.create_user, name='signup'),
     path('token/', views.get_token, name='token'),
 ]
 
-# Группируем все URL-ы API v1
 v1_urls = [
     path('auth/', include(auth_urls)),
     path('', include(router_v1.urls)),
 ]
 
-# Основной список URL-ов
 urlpatterns = [path('v1/', include(v1_urls))]
