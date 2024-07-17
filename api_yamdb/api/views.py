@@ -1,25 +1,30 @@
-import random
-from string import digits
-
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.pagination import (LimitOffsetPagination,
-                                       PageNumberPagination)
+from rest_framework.pagination import (
+    LimitOffsetPagination,
+    PageNumberPagination,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from .filters import TitleFilter
 from api.permissions import AdminOrReadOnly, IsAdminUser
-from api.serializers import (CategorySerializer, GenreSerializer,
-                             GetTokenSerializer, TitleCreateSerializer,
-                             TitleListSerializer, UserCreateSerializer,
-                             UserSerializer)
+from api.serializers import (
+    CategorySerializer,
+    GenreSerializer,
+    GetTokenSerializer,
+    TitleCreateSerializer,
+    TitleListSerializer,
+    UserCreateSerializer,
+    UserSerializer,
+)
 from reviews.models import Category, Genre, Title
 from users.models import User
 
@@ -63,23 +68,33 @@ def create_user(request):
     serializer = UserCreateSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    # Генерация кода подтверждения
-    # Если в настройках стоит использовать фиксированный код, то
-    # его не нужно пересохранять в коллекции postman во время тестов.
+    username = serializer.validated_data['username']
+    email = serializer.validated_data['email']
+
+    user, created = User.objects.get_or_create(
+        username=username, defaults={'email': email}
+    )
+
+    if not created and user.email != email:
+        return Response(
+            {
+                "error": "User with this username already exists and email "
+                "is differrent"
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
     if settings.USE_FIXED_CONFIRMATION_CODE:
         confirmation_code = settings.FIXED_CONFIRMATION_CODE
     else:
-        confirmation_code = ''.join(random.choices(digits, k=5))
+        confirmation_code = default_token_generator.make_token(user)
 
-    # Сохранение пользователя с кодом подтверждения
-    serializer.save(confirmation_code=confirmation_code)
+    user.confirmation_code = confirmation_code
+    user.save()
 
-    # Получение объекта пользователя
-    user = User.objects.get(username=serializer.validated_data['username'])
-
-    # Отправка письма с кодом подтверждения
     send_confirmation_email(user, confirmation_code)
 
+    serializer = UserCreateSerializer(user)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 

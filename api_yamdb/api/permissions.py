@@ -71,18 +71,3 @@ class IsModeratorOrReadOnly(BasePermission):
         return request.method in SAFE_METHODS or (
             request.user.is_authenticated and request.user.is_moderator
         )
-
-
-# Пример использования разрешений в представлениях (views):
-#
-# from .permissions import IsAdminUser, AuthorOrModerOrReadOnly,
-# IsAuthenticatedOrReadOnly
-#
-# class UserViewSet(viewsets.ModelViewSet):
-#     permission_classes = [IsAdminUser]
-#
-# class ReviewViewSet(viewsets.ModelViewSet):
-#     permission_classes = [IsAuthenticatedOrReadOnly, AuthorOrModerOrReadOnly]
-#
-# class CategoryViewSet(viewsets.ModelViewSet):
-#     permission_classes = [AdminOrReadOnly]
