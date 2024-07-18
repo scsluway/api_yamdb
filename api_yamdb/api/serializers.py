@@ -46,6 +46,9 @@ class UserCreateSerializer(
     class Meta:
         model = User
         fields = ('username', 'email')
+        extra_kwargs = {
+            'username': {'validators': []},
+        }
 
     def validate(self, data):
         username = data.get('username')

@@ -38,9 +38,10 @@ class User(AbstractUser):
     )
     bio = models.TextField(verbose_name='Биография', blank=True)
     confirmation_code = models.CharField(
-        max_length=5,
+        max_length=255,
         verbose_name='Код подтверждения',
         blank=True,
+        null=True,
         editable=False,
     )
 
@@ -49,8 +50,10 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.is_superuser or self.is_staff or self.role == 'admin'
+        return (
+            self.is_superuser or self.is_staff or self.role == self.Roles.ADMIN
+        )
 
     @property
     def is_moderator(self):
-        return self.role == 'moderator'
+        return self.role == self.Roles.MODERATOR
