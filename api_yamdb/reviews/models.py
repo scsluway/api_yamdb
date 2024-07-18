@@ -6,13 +6,20 @@ from django.db import models
 LIMIT_ON_NUMBER_OF_LETTERS = 20
 MINIMUM_RATING_VALUE = 1
 MAXIMUM_RATING_VALUE = 10
+MAX_NAME_LENGTH = 256
+MAX_SLUG_FIELD = 50
+MAX_TEXT_LENGTH = 500
 
 User = get_user_model()
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Имя')
-    slug = models.SlugField(unique=True, max_length=50, verbose_name='Слаг')
+    name = models.CharField(max_length=MAX_NAME_LENGTH, verbose_name='Имя')
+    slug = models.SlugField(
+        unique=True,
+        max_length=MAX_SLUG_FIELD,
+        verbose_name='Слаг'
+    )
 
     class Meta:
         ordering = ('name',)
@@ -24,8 +31,12 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Имя')
-    slug = models.SlugField(unique=True, max_length=50, verbose_name='Слаг')
+    name = models.CharField(max_length=MAX_NAME_LENGTH, verbose_name='Имя')
+    slug = models.SlugField(
+        unique=True,
+        max_length=MAX_SLUG_FIELD,
+        verbose_name='Слаг'
+    )
 
     class Meta:
         ordering = ('name',)
@@ -37,7 +48,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Имя')
+    name = models.CharField(max_length=MAX_NAME_LENGTH, verbose_name='Имя')
     year = models.PositiveSmallIntegerField(db_index=True, verbose_name='Год')
     description = models.TextField(verbose_name='Описание')
     category = models.ForeignKey(
@@ -64,7 +75,7 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-    text = models.CharField(max_length=500, verbose_name='Текст')
+    text = models.CharField(max_length=MAX_TEXT_LENGTH, verbose_name='Текст')
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
