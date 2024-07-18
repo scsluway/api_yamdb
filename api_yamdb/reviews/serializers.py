@@ -1,11 +1,16 @@
 from rest_framework import serializers
 
-from .models import Comment, Review
+from .models import (Comment, MINIMUM_RATING_VALUE,
+                     MAXIMUM_RATING_VALUE, Review)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
     text = serializers.CharField(required=True)
-    score = serializers.IntegerField(required=True)
+    score = serializers.IntegerField(
+        required=True,
+        min_value=MINIMUM_RATING_VALUE,
+        max_value=MAXIMUM_RATING_VALUE)
+
     author = serializers.SlugRelatedField(
         read_only=True, slug_field='username'
     )
@@ -14,14 +19,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = ('author',)
-
-    def validate(self, attrs):
-        if 0 > attrs['score'] or attrs['score'] > 10:
-            raise serializers.ValidationError(
-                'You can only rate from 0 to 10.'
-            )
-
-        return attrs
 
 
 class CommentSerializer(serializers.ModelSerializer):
