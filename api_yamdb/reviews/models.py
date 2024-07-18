@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-LIMIT_ON_NUMBER_OF_LETTERS = 20
+LIMITED_TITLE_OUTPUT = 20
 MINIMUM_RATING_VALUE = 1
 MAXIMUM_RATING_VALUE = 10
 MAX_NAME_LENGTH = 256
@@ -27,7 +27,7 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.name[:LIMIT_ON_NUMBER_OF_LETTERS]
+        return self.name[:LIMITED_TITLE_OUTPUT]
 
 
 class Genre(models.Model):
@@ -44,7 +44,7 @@ class Genre(models.Model):
         verbose_name_plural = 'Жанры'
 
     def __str__(self):
-        return self.name[:LIMIT_ON_NUMBER_OF_LETTERS]
+        return self.name[:LIMITED_TITLE_OUTPUT]
 
 
 class Title(models.Model):
@@ -71,7 +71,7 @@ class Title(models.Model):
         verbose_name_plural = 'Произведения'
 
     def __str__(self):
-        return self.name[:LIMIT_ON_NUMBER_OF_LETTERS]
+        return self.name[:LIMITED_TITLE_OUTPUT]
 
 
 class Review(models.Model):
@@ -107,7 +107,7 @@ class Review(models.Model):
         ]
 
     def __str__(self):
-        return self.text[:LIMIT_ON_NUMBER_OF_LETTERS]
+        return self.text[:LIMITED_TITLE_OUTPUT]
 
 
 class Comment(models.Model):
@@ -131,7 +131,7 @@ class Comment(models.Model):
         ordering = ('-pub_date',)
 
     def __str__(self):
-        return self.text[:LIMIT_ON_NUMBER_OF_LETTERS]
+        return self.text[:LIMITED_TITLE_OUTPUT]
 
 
 class GenreTitle(models.Model):
